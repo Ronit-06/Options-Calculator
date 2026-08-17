@@ -1,0 +1,30 @@
+# Maven build output
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+bin/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Compiled class files (if any end up outside target/)
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# Environment/local config
+.env
+*.properties.local
