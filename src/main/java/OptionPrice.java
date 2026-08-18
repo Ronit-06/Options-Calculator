@@ -1,5 +1,5 @@
 import org.apache.commons.math3.distribution.NormalDistribution;
-
+import java.util.Random;
 public class OptionPrice {
     private double stockPrice;
     private double strikePrice;
@@ -37,4 +37,29 @@ public class OptionPrice {
         double discountFactor = Math.exp(-riskFreeRate * timeToExpiration);
         return (stockPrice * normalCDF(d1)) - (strikePrice * discountFactor * normalCDF(d2));
     }
+
+    public double simulateOnePrice(){
+        Random random = new Random();
+        double z =  random.nextGaussian();
+        double sT = stockPrice * Math.exp((riskFreeRate - Math.pow(volatility, 2)/2) * timeToExpiration + (volatility * Math.sqrt(timeToExpiration) * z));
+
+        return sT;
+
+    }
+
+    public double calculateMonteCarloPrice(int numberOfSimulations) {
+        double totalPayoff = 0;
+
+        for (int i = 0; i < numberOfSimulations; i++) {
+            double simulatedPrice = this.simulateOnePrice();
+            double payoff = Math.max(simulatedPrice - strikePrice, 0);
+            totalPayoff = totalPayoff + payoff;
+        }
+
+        double averagePayoff = totalPayoff / numberOfSimulations;
+        double discounting = Math.exp(-riskFreeRate * timeToExpiration);
+
+        return averagePayoff * discounting;
+    }
+    
 }
