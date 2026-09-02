@@ -38,6 +38,13 @@ public class OptionPrice {
         return (stockPrice * normalCDF(d1)) - (strikePrice * discountFactor * normalCDF(d2));
     }
 
+    public double calculatePutPrice() {
+    double d1 = this.calculateD1();
+    double d2 = this.calculateD2();
+    double discountFactor = Math.exp(-riskFreeRate * timeToExpiration);
+    return (strikePrice *discountFactor* normalCDF(-d2)) - (stockPrice *  normalCDF(-d1));
+}
+
     public double simulateOnePrice(){
         Random random = new Random();
         double z =  random.nextGaussian();
@@ -59,6 +66,18 @@ public class OptionPrice {
         double averagePayoff = totalPayoff / numberOfSimulations;
         double discounting = Math.exp(-riskFreeRate * timeToExpiration);
 
+        return averagePayoff * discounting;
+    }
+
+    public double calculateMonteCarloPutPrice(int numberOfSimulations) {
+        double totalPayoff = 0;
+        for (int i = 0; i < numberOfSimulations; i++) {
+            double simulatedPrice = this.simulateOnePrice();
+            double payoff = Math.max(strikePrice - simulatedPrice, 0);
+            totalPayoff = totalPayoff + payoff;
+        }
+        double averagePayoff = totalPayoff / numberOfSimulations;
+        double discounting = Math.exp(-riskFreeRate * timeToExpiration);
         return averagePayoff * discounting;
     }
     
